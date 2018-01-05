@@ -36,7 +36,7 @@ export function initMixin (Vue: Class<Component>) {
       initInternalComponent(vm, options)
     } else {
       vm.$options = mergeOptions(
-        resolveConstructorOptions(vm.constructor),
+        resolveConstructorOptions(vm.constructor),  //返回options，如果有父级传入的，合并入option对象，并监听其改变
         options || {},
         vm
       )

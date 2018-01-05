@@ -2,7 +2,7 @@ import Vue from './instance/index'
 import { initGlobalAPI } from './global-api/index'
 import { isServerRendering } from 'core/util/env'
 
-initGlobalAPI(Vue)
+initGlobalAPI(Vue)  //vue属性方法注册
 
 Object.defineProperty(Vue.prototype, '$isServer', {
   get: isServerRendering
