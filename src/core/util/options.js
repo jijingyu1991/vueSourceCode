@@ -8,7 +8,7 @@ import { set } from '../observer/index'
 import {
   ASSET_TYPES,
   LIFECYCLE_HOOKS
-} from 'shared/constants'
+} from 'shared/constants'   //share路径在scripts\alias.js中配置，指向src/shared
 
 import {
   extend,
@@ -53,9 +53,9 @@ function mergeData (to: Object, from: ?Object): Object {
     key = keys[i]
     toVal = to[key]
     fromVal = from[key]
-    if (!hasOwn(to, key)) {
+    if (!hasOwn(to, key)) {  //hasOwn 判断to对象中是否有key属性
       set(to, key, fromVal)
-    } else if (isPlainObject(toVal) && isPlainObject(fromVal)) {
+    } else if (isPlainObject(toVal) && isPlainObject(fromVal)) { //isPlainObject判断是否是对象 如果对象的属性仍是对象嵌套调用
       mergeData(toVal, fromVal)
     }
   }

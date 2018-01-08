@@ -53,9 +53,9 @@ export function initMixin (Vue: Class<Component>) {
     initEvents(vm)
     initRender(vm)
     callHook(vm, 'beforeCreate')
-    initInjections(vm) // resolve injections before data/props
+    initInjections(vm) // resolve injections before data/props Object.defineProperty
     initState(vm)
-    initProvide(vm) // resolve provide after data/props
+    initProvide(vm) // resolve provide after data/props 如果是函数上下文指向vm
     callHook(vm, 'created')
 
     /* istanbul ignore if */
@@ -66,7 +66,7 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     if (vm.$options.el) {
-      vm.$mount(vm.$options.el)
+      vm.$mount(vm.$options.el) // 不传el是需要手动mount
     }
   }
 }
