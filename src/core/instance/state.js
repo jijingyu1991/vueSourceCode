@@ -29,7 +29,9 @@ import {
 } from '../util/index'
 
 const sharedPropertyDefinition = {
+  //是否能在for-in循环中遍历出来或在Object.keys中列举出来，默认值为为 true。
   enumerable: true,
+  //如果为false，则任何尝试删除目标属性或修改属性以下特性（writable, configurable, enumerable）的行为将被无效化，默认值为为 true。
   configurable: true,
   get: noop,
   set: noop
@@ -109,7 +111,7 @@ function initProps (vm: Component, propsOptions: Object) {
 
 function initData (vm: Component) {
   let data = vm.$options.data
-  data = vm._data = typeof data === 'function'
+  data = vm._data = typeof data === 'function'  // 如果data是函数去data对象，然后判断最终的data是不是object格式
     ? getData(data, vm)
     : data || {}
   if (!isPlainObject(data)) {
@@ -127,6 +129,7 @@ function initData (vm: Component) {
   let i = keys.length
   while (i--) {
     const key = keys[i]
+    // props与methods中属性不能与data中重名
     if (process.env.NODE_ENV !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
@@ -142,11 +145,12 @@ function initData (vm: Component) {
         vm
       )
     } else if (!isReserved(key)) {
+      //在实例对象上设置与 data 属性同名的访问器属性
       proxy(vm, `_data`, key)
     }
   }
   // observe data
-  observe(data, true /* asRootData */)
+  observe(data, true /* asRootData */) //返回观察对象
 }
 
 export function getData (data: Function, vm: Component): any {

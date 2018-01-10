@@ -105,6 +105,7 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * or the existing observer if the value already has one.
  */
 export function observe (value: any, asRootData: ?boolean): Observer | void {
+  // 数据必须是对象格式并且不可以是vue的节点对象
   if (!isObject(value) || value instanceof VNode) {
     return
   }
@@ -115,6 +116,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     observerState.shouldConvert &&
     !isServerRendering() &&
     (Array.isArray(value) || isPlainObject(value)) &&
+    // 判断一个对象是否是可扩展的（是否可以在它上面添加新的属性）
     Object.isExtensible(value) &&
     !value._isVue
   ) {
