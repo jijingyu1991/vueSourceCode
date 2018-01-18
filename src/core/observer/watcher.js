@@ -47,8 +47,8 @@ export default class Watcher {
     options?: ?Object,
     isRenderWatcher?: boolean
   ) {
+    // console.log(this)
     this.vm = vm
-    console.log(this)
     if (isRenderWatcher) {
       vm._watcher = this
     }
@@ -98,11 +98,12 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
-    pushTarget(this) //注册watcher对象
+    pushTarget(this) //注册watcher对象到dep.target
     let value
     const vm = this.vm
     try {
       value = this.getter.call(vm, vm)
+      // console.log(value)
     } catch (e) {
       if (this.user) {
         handleError(e, vm, `getter for watcher "${this.expression}"`)
@@ -118,6 +119,7 @@ export default class Watcher {
       popTarget()
       this.cleanupDeps()
     }
+    console.log(value)
     return value
   }
 

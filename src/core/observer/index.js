@@ -38,11 +38,14 @@ export class Observer {
   vmCount: number; // number of vms that has this object as root $data
 
   constructor (value: any) {
-    this.value = value
+    console.log(this)
+    this.value = value  //this为一个observer对象，this.value是data
     this.dep = new Dep()
     this.vmCount = 0
+    // 将observer绑定到data的_ob_对象上
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
+      //hasProto判断浏览器是否支持__proto__，支持覆盖原型方法，不支持则直接覆盖对象或数组的方法
       const augment = hasProto
         ? protoAugment
         : copyAugment
@@ -81,6 +84,7 @@ export class Observer {
  * Augment an target Object or Array by intercepting
  * the prototype chain using __proto__
  */
+/*直接覆盖原型的方法来修改目标对象或数组*/
 function protoAugment (target, src: Object, keys: any) {
   /* eslint-disable no-proto */
   target.__proto__ = src
@@ -92,6 +96,7 @@ function protoAugment (target, src: Object, keys: any) {
  * hidden properties.
  */
 /* istanbul ignore next */
+// 覆盖目标对象或数组的方法
 function copyAugment (target: Object, src: Object, keys: Array<string>) {
   for (let i = 0, l = keys.length; i < l; i++) {
     const key = keys[i]
@@ -110,6 +115,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     return
   }
   let ob: Observer | void
+  // 判断是否存在_ob_对象，并且_ob_对象是否是Obserber，如果是直接返回，在observer构造class中会将observer注册到data_ob_中
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
