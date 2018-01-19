@@ -38,7 +38,7 @@ export class Observer {
   vmCount: number; // number of vms that has this object as root $data
 
   constructor (value: any) {
-    console.log(this)
+    // console.log(this)
     this.value = value  //this为一个observer对象，this.value是data
     this.dep = new Dep()
     this.vmCount = 0
@@ -50,6 +50,7 @@ export class Observer {
         ? protoAugment
         : copyAugment
       augment(value, arrayMethods, arrayKeys)
+      // 遍历数组添加观察
       this.observeArray(value)
     } else {
       this.walk(value)
@@ -71,6 +72,7 @@ export class Observer {
   /**
    * Observe a list of Array items.
    */
+  // 遍历数组添加观察
   observeArray (items: Array<any>) {
     for (let i = 0, l = items.length; i < l; i++) {
       observe(items[i])
@@ -137,6 +139,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 /**
  * Define a reactive property on an Object.
  */
+// 定义对象，value变化是进行通知
 export function defineReactive (
   obj: Object,
   key: string,
@@ -146,6 +149,7 @@ export function defineReactive (
 ) {
   const dep = new Dep()
 
+  // getOwnPropertyDescriptor指定对象上一个自有属性对应的属性描述符（一般为configurable，enumerable，value，writable，get，set）
   const property = Object.getOwnPropertyDescriptor(obj, key)
   if (property && property.configurable === false) {
     return
@@ -160,9 +164,12 @@ export function defineReactive (
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
+      // 有getter方法是执行
       const value = getter ? getter.call(obj) : val
+      // Dep.target 是一个watcher对象 执行watcher的addDep添加依赖
       if (Dep.target) {
         dep.depend()
+        // 子对象进行依赖收集，其实就是将同一个watcher观察者实例放进了两个depend中，一个是正在本身闭包中的depend，另一个是子元素的depend
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
@@ -187,7 +194,9 @@ export function defineReactive (
       } else {
         val = newVal
       }
+      // 对新值进行observe
       childOb = !shallow && observe(newVal)
+      // 通知观察者
       dep.notify()
     }
   })
@@ -258,7 +267,9 @@ export function del (target: Array<any> | Object, key: any) {
 function dependArray (value: Array<any>) {
   for (let e, i = 0, l = value.length; i < l; i++) {
     e = value[i]
+    // 子元素的_ob_是observer，对子元素进行依赖收集
     e && e.__ob__ && e.__ob__.dep.depend()
+    // 如果子元素是数据，进行嵌套调用
     if (Array.isArray(e)) {
       dependArray(e)
     }
