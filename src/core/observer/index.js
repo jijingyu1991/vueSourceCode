@@ -39,13 +39,13 @@ export class Observer {
 
   constructor (value: any) {
     // console.log(this)
-    this.value = value  //this为一个observer对象，this.value是data
+    this.value = value  // this为一个observer对象，this.value是data
     this.dep = new Dep()
     this.vmCount = 0
     // 将observer绑定到data的_ob_对象上
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
-      //hasProto判断浏览器是否支持__proto__，支持覆盖原型方法，不支持则直接覆盖对象或数组的方法
+      // hasProto判断浏览器是否支持__proto__，支持覆盖原型方法，不支持则直接覆盖对象或数组的方法
       const augment = hasProto
         ? protoAugment
         : copyAugment

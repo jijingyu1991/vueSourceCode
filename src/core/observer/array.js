@@ -37,7 +37,7 @@ export const arrayMethods = Object.create(arrayProto)
         inserted = args.slice(2)
         break
     }
-    if (inserted) ob.observeArray(inserted) //循环数组值添加观察者
+    if (inserted) ob.observeArray(inserted) // 循环数组值添加观察者
     // notify change
     // 调用以上数组方法时dep通知观察者
     ob.dep.notify()

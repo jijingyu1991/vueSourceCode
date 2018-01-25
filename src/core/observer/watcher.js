@@ -47,7 +47,6 @@ export default class Watcher {
     options?: ?Object,
     isRenderWatcher?: boolean
   ) {
-    // console.log(this)
     this.vm = vm
     if (isRenderWatcher) {
       vm._watcher = this
@@ -74,7 +73,6 @@ export default class Watcher {
       ? expOrFn.toString()
       : ''
     // parse expression for getter
-    // function类型直接赋值，string类型用.判断是否有子属性，没有直接返回，有返回一个函数遍历求自属性值
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
@@ -98,12 +96,11 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
-    pushTarget(this) //注册watcher对象到dep.target
+    pushTarget(this)
     let value
     const vm = this.vm
     try {
       value = this.getter.call(vm, vm)
-      // console.log(value)
     } catch (e) {
       if (this.user) {
         handleError(e, vm, `getter for watcher "${this.expression}"`)
@@ -119,7 +116,6 @@ export default class Watcher {
       popTarget()
       this.cleanupDeps()
     }
-    console.log(value)
     return value
   }
 
