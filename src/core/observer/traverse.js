@@ -3,6 +3,7 @@
 import { _Set as Set, isObject } from '../util/index'
 import type { SimpleSet } from '../util/index'
 
+// new set 存放observe id 避免重复
 const seenObjects = new Set()
 
 /**
@@ -18,7 +19,7 @@ export function traverse (val: any) {
 function _traverse (val: any, seen: SimpleSet) {
   let i, keys
   const isA = Array.isArray(val)
-  if ((!isA && !isObject(val)) || Object.isFrozen(val)) {
+  if ((!isA && !isObject(val)) || Object.isFrozen(val)) {  // 表示给定对象是否被冻结的Boolean。
     return
   }
   if (val.__ob__) {
@@ -28,6 +29,7 @@ function _traverse (val: any, seen: SimpleSet) {
     }
     seen.add(depId)
   }
+  // 数组，对象遍历获取id
   if (isA) {
     i = val.length
     while (i--) _traverse(val[i], seen)
