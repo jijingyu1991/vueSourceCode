@@ -96,7 +96,7 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
-    pushTarget(this)
+    pushTarget(this) // 将当前watcher赋值给dep.target 如果当期存在dep.target，将其放入targetStack堆栈中
     let value
     const vm = this.vm
     /*
@@ -120,9 +120,9 @@ export default class Watcher {
       // "touch" every property so they are all tracked as
       // dependencies for deep watching
       if (this.deep) {
-        traverse(value)
+        traverse(value)  // 将所有的对象依赖（dep.id）收集到一个set对象中，数组和对象嵌套循环
       }
-      popTarget()
+      popTarget() // 将dep.target设为之前的观察者
       this.cleanupDeps()
     }
     return value
@@ -153,10 +153,12 @@ export default class Watcher {
         dep.removeSub(this)
       }
     }
+    // 将newDepIds赋给depIds，清空newDepIds
     let tmp = this.depIds
     this.depIds = this.newDepIds
     this.newDepIds = tmp
     this.newDepIds.clear()
+    // 将newDeps赋给deps，清空newDeps
     tmp = this.deps
     this.deps = this.newDeps
     this.newDeps = tmp
@@ -172,8 +174,10 @@ export default class Watcher {
     if (this.lazy) {
       this.dirty = true
     } else if (this.sync) {
+      // 如果是同步，直接渲染视图
       this.run()
     } else {
+      // 如果是异步，插入异步队列等待渲染视图
       queueWatcher(this)
     }
   }
@@ -190,12 +194,14 @@ export default class Watcher {
         // Deep watchers and watchers on Object/Arrays should fire even
         // when the value is the same, because the value may
         // have mutated.
+        // 即便值相同，拥有Deep属性的观察者以及在对象／数组上的观察者应该被触发更新，因为它们的值可能发生了改变
         isObject(value) ||
         this.deep
       ) {
         // set new value
         const oldValue = this.value
         this.value = value
+        // 触发回调，渲染视图
         if (this.user) {
           try {
             this.cb.call(this.vm, value, oldValue)
@@ -221,6 +227,7 @@ export default class Watcher {
   /**
    * Depend on all deps collected by this watcher.
    */
+  // 收集该观察者的所有依赖
   depend () {
     let i = this.deps.length
     while (i--) {
@@ -231,6 +238,7 @@ export default class Watcher {
   /**
    * Remove self from all dependencies' subscriber list.
    */
+  /* 将自身从所有依赖收集订阅列表删除 */
   teardown () {
     if (this.active) {
       // remove self from vm's watcher list

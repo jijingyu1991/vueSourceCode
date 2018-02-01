@@ -48,11 +48,13 @@ export default class Dep {
 Dep.target = null
 const targetStack = []
 
+// 将watcher实例赋值给dep.target对象，如果之前存在观察者将其放入targetStack堆栈中
 export function pushTarget (_target: Watcher) {
   if (Dep.target) targetStack.push(Dep.target)
   Dep.target = _target
 }
 
+// 从targetStack堆栈中删除最后一个元素，这个元素负责为dep.target
 export function popTarget () {
   Dep.target = targetStack.pop()
 }

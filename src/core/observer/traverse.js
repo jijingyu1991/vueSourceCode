@@ -19,7 +19,7 @@ export function traverse (val: any) {
 function _traverse (val: any, seen: SimpleSet) {
   let i, keys
   const isA = Array.isArray(val)
-  if ((!isA && !isObject(val)) || Object.isFrozen(val)) {  // 表示给定对象是否被冻结的Boolean。
+  if ((!isA && !isObject(val)) || Object.isFrozen(val)) {  // 表示给定对象是否被冻结的。
     return
   }
   if (val.__ob__) {
