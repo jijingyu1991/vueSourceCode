@@ -29,9 +29,9 @@ import {
 } from '../util/index'
 
 const sharedPropertyDefinition = {
-  //是否能在for-in循环中遍历出来或在Object.keys中列举出来，默认值为为 true。
+  // 是否能在for-in循环中遍历出来或在Object.keys中列举出来，默认值为为 true。
   enumerable: true,
-  //如果为false，则任何尝试删除目标属性或修改属性以下特性（writable, configurable, enumerable）的行为将被无效化，默认值为为 true。
+  // 如果为false，则任何尝试删除目标属性或修改属性以下特性（writable, configurable, enumerable）的行为将被无效化，默认值为为 true。
   configurable: true,
   get: noop,
   set: noop

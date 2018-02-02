@@ -19,20 +19,23 @@ export default class Dep {
     this.subs = []
   }
 
+  // 添加观察者
   addSub (sub: Watcher) {
     this.subs.push(sub)
   }
 
+  // 移除观察者
   removeSub (sub: Watcher) {
     remove(this.subs, sub)
   }
 
+  // 存在观察者时，收集依赖
   depend () {
     if (Dep.target) {
       Dep.target.addDep(this)
     }
   }
-
+  // 执行所有观察者的update事件，渲染视图
   notify () {
     // stabilize the subscriber list first
     const subs = this.subs.slice()

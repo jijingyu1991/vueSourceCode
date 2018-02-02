@@ -48,16 +48,33 @@ function flushSchedulerQueue () {
   //    user watchers are created before the render watcher)
   // 3. If a component is destroyed during a parent component's watcher run,
   //    its watchers can be skipped.
+  /*
+    给queue排序，这样做可以保证：
+    1.组件更新的顺序是从父组件到子组件的顺序，因为父组件总是比子组件先创建。
+    2.一个组件的user watchers比render watcher先运行，因为user watchers往往比render watcher更早创建
+    3.如果一个组件在父组件watcher运行期间被销毁，它的watcher执行将被跳过。
+  */
   queue.sort((a, b) => a.id - b.id)
 
   // do not cache length because more watchers might be pushed
   // as we run existing watchers
+  // 这里不用index = queue.length;index > 0; index--的方式写是因为不要将length进行缓存，因为在执行处理现有watcher对象期间，更多的watcher对象可能会被push进queue
   for (index = 0; index < queue.length; index++) {
     watcher = queue[index]
     id = watcher.id
     has[id] = null
     watcher.run()
     // in dev build, check and stop circular updates.
+    /*
+      在测试环境中，检测watch是否在死循环中
+      比如这样一种情况
+      watch: {
+        test () {
+          this.test++;
+        }
+      }
+      持续执行了一百次watch代表可能存在死循环
+    */
     if (process.env.NODE_ENV !== 'production' && has[id] != null) {
       circular[id] = (circular[id] || 0) + 1
       if (circular[id] > MAX_UPDATE_COUNT) {
@@ -75,13 +92,16 @@ function flushSchedulerQueue () {
   }
 
   // keep copies of post queues before resetting state
+  // 在重置状态之前拷贝队列，数组slice方法快速浅拷贝
   const activatedQueue = activatedChildren.slice()
   const updatedQueue = queue.slice()
 
   resetSchedulerState()
 
   // call component updated and activated hooks
+  /* 使子组件状态都改编成active同时调用activated钩子*/
   callActivatedHooks(activatedQueue)
+  /* 调用updated钩子*/
   callUpdatedHooks(updatedQueue)
 
   // devtool hook
